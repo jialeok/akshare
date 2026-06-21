@@ -42,12 +42,10 @@ def fetch_one(code: str, start: str, end: str, days: int):
 def hist(codes: str, days: int = 7):
     end = date.today().strftime("%Y%m%d")
     start = (date.today() - timedelta(days=days + 5)).strftime("%Y%m%d")
-
     code_list = [c.strip() for c in codes.split(",") if c.strip()]
     data = {}
     errors = {}
 
-    # 并发查询，最多8线程
     with ThreadPoolExecutor(max_workers=8) as executor:
         futures = {executor.submit(fetch_one, code, start, end, days): code for code in code_list}
         for future in as_completed(futures):
